@@ -3,7 +3,7 @@
  */
 
 import { SignerClient, OrderType, ApiClient, OrderApi, MarketHelper } from '../src';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -13,9 +13,12 @@ function trimException(e: Error): string {
 
 async function createTWAPOrderWithSLTP() {
   const API_PRIVATE_KEY = process.env['API_PRIVATE_KEY'] || "";
-  const ACCOUNT_INDEX = parseInt(process.env['ACCOUNT_INDEX'] || "1000");
-  const API_KEY_INDEX = parseInt(process.env['API_KEY_INDEX'] || "4");
-  const BASE_URL = process.env['BASE_URL'] || 'https://mainnet.zklighter.elliot.ai';
+  if (!API_PRIVATE_KEY) {
+    throw new Error('API_PRIVATE_KEY environment variable is required');
+  }
+  const ACCOUNT_INDEX = Number.parseInt(process.env['ACCOUNT_INDEX'] ?? '271', 10);
+  const API_KEY_INDEX = Number.parseInt(process.env['API_KEY_INDEX'] ?? '4', 10);
+  const BASE_URL = 'https://testnet.zklighter.elliot.ai';
 
   const signerClient = new SignerClient({
     url: BASE_URL,

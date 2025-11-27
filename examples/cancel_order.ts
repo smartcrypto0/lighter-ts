@@ -3,11 +3,11 @@
  */
 
 import { SignerClient, ApiClient, OrderApi } from '../src';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-async function getAuthToken(signerClient: SignerClient, expiryInSeconds: number = 3600): Promise<string> {
+async function getAuthToken(signerClient: SignerClient, expiryInSeconds: number = 8 * 60 * 60): Promise<string> {
   const auth = await signerClient.createAuthTokenWithExpiry(expiryInSeconds);
   return auth;
 }
@@ -33,68 +33,38 @@ async function cancelOrder() {
   const orderApi = new OrderApi(apiClient);
 
   try {
-    console.log('🚀 Canceling Order...\n');
-    
-    console.log(`📋 Fetching active orders for market ${MARKET_INDEX}...`);
-    
-    // Get auth token
-    const auth = await getAuthToken(signerClient, 3600);
-    
-    // Fetch active orders
+    const auth = await getAuthToken(signerClient, 8 * 60 * 60);
     const activeOrders = await orderApi.getAccountActiveOrders(ACCOUNT_INDEX, MARKET_INDEX, auth);
-    
     const orders = Array.isArray(activeOrders) ? activeOrders : (activeOrders as any).orders || [];
     
     if (orders.length === 0) {
-      console.log('⚠️ No active orders found in this market');
-      await apiClient.close();
+      console.log('⚠️ No active orders found');
       return;
     }
     
-    // Get the first order
     const firstOrder = orders[0];
     const orderIndex = parseInt(firstOrder.id || firstOrder.order_id || firstOrder.order_index || '0');
-    
-    console.log(`📋 Cancel Parameters:`);
-    console.log(`   Market Index: ${MARKET_INDEX}`);
-    console.log(`   Order ID: ${firstOrder.id}`);
-    console.log(`   Order Index: ${orderIndex}`);
-    console.log(`   Side: ${firstOrder.side}`);
-    console.log(`   Type: ${firstOrder.type}`);
-    console.log(`   Size: ${firstOrder.size || firstOrder.base_amount}`);
-    console.log(`   Price: ${firstOrder.price}\n`);
     
     const [tx, txHash, error] = await signerClient.cancelOrder({
       marketIndex: MARKET_INDEX,
       orderIndex
     });
 
-    if (error) {
-      console.error(`❌ Cancel order failed: ${error}`);
-      await apiClient.close();
+    if (error || !txHash) {
+      console.error(`❌ Cancel failed: ${error || 'No transaction hash'}`);
       return;
     }
 
-    if (!txHash || txHash === '') {
-      console.error('❌ No transaction hash returned');
-      await apiClient.close();
-      return;
-    }
-
-    console.log(`✅ Cancel request submitted: ${txHash.substring(0, 16)}...`);
-    
-    console.log(`⏳ Waiting for confirmation...`);
     try {
       await signerClient.waitForTransaction(txHash, 30000, 2000);
-      console.log('✅ Order canceled successfully');
+      console.log(`✅ Order canceled: ${txHash.substring(0, 16)}...`);
     } catch (waitError) {
-      console.error(`❌ Cancel confirmation failed:`, waitError);
+      console.error(`❌ Cancel failed: ${waitError instanceof Error ? waitError.message : 'Unknown error'}`);
     }
-
-    console.log('\n🎉 Order cancelation complete!');
-    await apiClient.close();
   } catch (error) {
     console.error(`❌ Error:`, error);
+  } finally {
+    await signerClient.close();
     await apiClient.close();
   }
 }
