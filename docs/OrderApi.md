@@ -197,16 +197,16 @@ console.log('Order created:', order);
 Cancels an order via REST API (for advanced use cases; prefer `SignerClient.cancelOrder()`).
 
 **Parameters:**
-- `marketIndex: number` - Market index
-- `orderIndex: number` - Order index to cancel
+- `market_id: number` - Market index
+- `order_id: string` - Order ID to cancel
 
 **Returns:** `Promise<{ success: boolean }>` - Cancellation result
 
 **Example:**
 ```typescript
 const result = await orderApi.cancelOrder({
-  marketIndex: 0,
-  orderIndex: 12345
+  market_id: 0,
+  order_id: '12345'
 });
 console.log('Cancel result:', result);
 ```

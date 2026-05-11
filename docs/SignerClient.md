@@ -118,7 +118,7 @@ Cancels an existing order.
 
 **Parameters:**
 - `marketIndex: number` - Market index
-- `orderIndex: number` - Order index to cancel
+- `orderIndex: string` - Order index to cancel
 - `nonce?: number` - Optional nonce (auto-generated if not provided)
 - `skipNonce?: boolean` - Skip nonce checks/signing attribute when supported by signer
 
@@ -128,7 +128,7 @@ Cancels an existing order.
 ```typescript
 const [tx, txHash, err] = await client.cancelOrder({
   marketIndex: 0,
-  orderIndex: 12345
+  orderIndex: '12345'
 });
 ```
 

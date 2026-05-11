@@ -217,7 +217,7 @@ await signerClient.waitForTransaction(hash);
 ```typescript
 const [tx, hash, error] = await signerClient.cancelOrder({
   marketIndex: 0,
-  orderIndex: 12345  // Your order's index
+  orderIndex: '12345'  // Your order's index
 });
 
 if (error) {
@@ -385,4 +385,3 @@ Complete API documentation with all methods and parameters.
 
 ### [SignerClient Documentation](./SignerClient.md)
 Detailed reference for every SignerClient method and constant.
-

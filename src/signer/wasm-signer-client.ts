@@ -83,7 +83,7 @@ export interface CreateMarketOrderParams {
 
 export interface CancelOrderParams {
   marketIndex: number;
-  orderIndex: number;
+  orderIndex: string;
   nonce?: number; // Optional nonce (will be fetched automatically if not provided)
   skipNonce?: boolean;
 }
@@ -3143,4 +3143,3 @@ export class SignerClient {
     }
   }
 }
-
