@@ -43,7 +43,7 @@ async function cancelOrder() {
     }
     
     const firstOrder = orders[0];
-    const orderIndex = parseInt(firstOrder.id || firstOrder.order_id || firstOrder.order_index || '0');
+    const orderIndex = String(firstOrder.id || firstOrder.order_id || firstOrder.order_index || '0');
     
     const [tx, txHash, error] = await signerClient.cancelOrder({
       marketIndex: MARKET_INDEX,

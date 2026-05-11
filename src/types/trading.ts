@@ -55,8 +55,7 @@ export interface CreateMarketOrderParams {
 
 export interface CancelOrderParams {
   marketIndex: number;
-  orderIndex: number;
+  orderIndex: string;
   nonce?: number;
   skipNonce?: boolean;
 }
-

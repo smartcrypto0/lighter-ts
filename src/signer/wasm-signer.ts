@@ -75,7 +75,7 @@ export interface CreateOrderParams {
 
 export interface CancelOrderParams {
   marketIndex: number;
-  orderIndex: number;
+  orderIndex: string;
   skipNonce?: number;
   nonce: number;
   apiKeyIndex: number;

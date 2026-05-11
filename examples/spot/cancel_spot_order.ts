@@ -53,7 +53,7 @@ async function cancelSpotOrder() {
     }
     
     const firstOrder = orders[0];
-    const orderIndex = parseInt(firstOrder.id || firstOrder.client_order_id || firstOrder.client_order_index || '0');
+    const orderIndex = String(firstOrder.id || firstOrder.client_order_id || firstOrder.client_order_index || '0');
     
     console.log(`📋 Canceling order ${orderIndex} on market ${MARKET_INDEX}...`);
     
@@ -86,4 +86,3 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 export { cancelSpotOrder };
-
